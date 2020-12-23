@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>shuwashuwa superadmin interface</title>
+	<script src="vue.js"></script>
+	<script src="dcp.js"></script>
+	<script src="req.js"></script>
+	<script src="app.js"></script>
+	<link rel="stylesheet" href="page.css"/>
+</head>
+<body>
+<div id="LoginForm">
+	<h1>数蛙数蛙超管控制台</h1>
+	<div id="username_sub">
+		<input id="username" type="text" placeholder="用户名" value="shuwashuwa"/>
+	</div>
+	<div id="password_sub">
+		<input id="password" type="password" placeholder="密码" value="Tsugudaisuki"/>
+	</div>
+	<button id="login_button">
+		登录
+	</button>
+</div>
+<div id="ManagementPage" class="invisible">
+	<div id="AdminList">
+		<div class="admin header">
+			<span class="id">ID</span>
+			<span class="name">名字</span>
+			<span class="phone">手机</span>
+			<span class="email">邮箱</span>
+			<span class="ident">身份</span>
+			<span class="depart">学院</span>
+			<span class="stuid">学生证号</span>
+			<button v-bind:class="showTempo?'show':'hide'" v-on:click="showTempo=!showTempo">{{showTempo?'-':'+'}}</button>
+		</div>
+		<div class="admin" id="addAdminForm" v-bind:class="showTempo?'':'invisible'">
+			<input v-bind:type="key=='id'?'number':'text'" v-for="(val,key,ind) in ctfDict" v-bind:class="key" v-model="tempo[val]"/>
+			<button class="add" v-on:click="addAdmin(tempo)">+</button>
+		</div>
+		<div class="admin" v-for="admin in admins">
+			<input v-bind:type="key=='id'?'number':'text'" v-for="(val,key,ind) in ctfDict" v-bind:class="key" v-model="admin[val]" v-bind:readonly="key=='id'" v-on:change="updAdmin(admin)"/>
+			<button class="delete" v-on:click="deleteAdmin(admin)">-</button>
+		</div>
+	</div>
+	<div id="StatusWindow" v-bind:class="pop?'':'winHide'">
+		<button class="toggleButton" v-on:click="pop=!pop">{{pop?'>':'<'}}</button>
+		<span class="windowContent">
+			<div class="ImageCount">
+				<div class="ImageCounter" v-bind:class="delOn||hovered?'transparent':''">缓存图片数量：<span class="cc">{{count}}</span></div>
+				<div class="ImageClearer" v-bind:class="delOn?'opaque':''">
+					<div class="PasswordChange" v-on:mouseenter="hovered=true" v-on:mouseleave="hovered=false">
+						<input type="number" v-model="clearDays" placeholder="clear days" class="clear" v-on:focus="delOn=true" v-on:focusout="delOn=false"/>
+						<button v-on:click="clear(clearDays)" class="clear">⚙</button>
+					</div>
+				</div>
+			</div>
+			<div class="PasswordChange">
+				<input type="password" v-model="changedPasswd" placeholder="换密码"/>
+				<button v-on:click="change(changedPasswd)">⚙</button>
+			</div>
+		</span>
+	</div>
+</div>
+<div id="MessageOverlay" class="invisible">
+	<div id="Message" class="inform">试图说些批话</div>
+</div>
+<script>
+	let application=new App();
+</script>
+</body>
+</html>
