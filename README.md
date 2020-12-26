@@ -7,6 +7,6 @@ Note: to use this interface, you would probably want to put those files into `se
 
 Application note:
 
-put font-awesome package into icons/ directory
-put `date-fns.min.js` and `date-fns.min.js.map` into the root directory
-edit `BaseURL` in `app.js`
+* put font-awesome package into icons/ directory
+* put `date-fns.min.js` and `date-fns.min.js.map` into the root directory
+* edit `BaseURL` in `app.js`
