@@ -12,7 +12,7 @@ body *::selection{
 }
 
 .invisible{
-    display: none;
+    display: none !important;
 }
 .error{
     background-color: #ffedea;
@@ -123,7 +123,7 @@ body *::selection{
     opacity: 80%;
 }
 #LoginForm input{
-    font-family: "等距更纱黑体 SC";
+    font-family: "更纱黑体 SC", "Sarasa Gothic CL", Arial, 微软雅黑;
     font-size: 50px;
     line-height: 80px;
     height: 80px;
@@ -152,17 +152,76 @@ body *::selection{
     border-color: #16679b;
 }
 
+.TabsList{
+    height: 40px;
+    font-size: 0px;
+    line-height: 34px;
+}
+.Tab{
+    position: relative;
+    box-sizing: border-box;
+    height: 40px;
+    font-size:20px;
+    border: none;
+    border-radius:5px 5px 0 0;
+    margin-left: 4px;
+    transition: 0.1s ease;
+}
+.Tab.selected{
+    border-color: #0f3169;
+    background: #0f3169;
+    color:#d3e6ff;
+    font-weight:900;
+    box-shadow: inset 0 10px 20px -10px #d3e6ff44;
+}
+.Tab::before{
+    content: "";
+    position: absolute;
+    border-radius:5px 5px 0 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+}
+.Tab.selected::before{
+    box-shadow: 0 2px 4px #2c3e50;
+}
+.Tab.unselected{
+    border-color: #ffe7c8;
+    background: #ffe7c8;
+}
+.Tab.unselected:hover{
+    border-color: #ebd6ba;
+    background: #ebd6ba;
+}
+.TabsPage{
+    position: relative;
+    height: calc(100vh - 70px);
+    border: 1px solid #0f3169;
+    border-radius: 5px;
+    background: #ffe7c855;
+    width: max-content;
+}
+.TabsPage::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 2px 4px #2c3e50;
+    z-index: -1;
+}
+
 /***
  * Admin list stuffs
  */
 
 #AdminList{
-    border: 1px solid slategray;
-    border-radius: 5px;
     padding:4px;
-    width: 1180px;
-    height: calc(100vh - 30px);
-    background: #ffe7c855;
+    width: max-content;
+    height: 100%;
 }
 #AdminList .admin{
     padding-left: 4px;
@@ -217,9 +276,10 @@ body *::selection{
     padding: 0px;
     vertical-align: baseline;
     margin-top:2px;
-    font-size: 26px;
+    font-size: 15px;
+    transition: 0.1s ease;
 }
-button.add{
+button.add,button.select{
     background: #2a2d7b;
     color: #ffe7c8;
 }
@@ -230,10 +290,12 @@ button.delete{
 button.show{
     background: #466305;
     color: #eeffd6;
+    font-size: 20px !important;
 }
 button.hide{
     background: #594409;
     color: #fffeda;
+    font-size: 20px !important;
 }
 button:focus{
     outline: none;
@@ -346,7 +408,7 @@ button:focus{
     color:#ffe7c8;
     border:none;
     font-weight: 900;
-    font-size: 30px;
+    font-size: 20px;
     height: 40px;
     width: 40px;
     transition: 0.1s ease;
@@ -401,4 +463,347 @@ button:focus{
 }
 .opaque{
     opacity: 100%;
+}
+/**
+ * filters
+ */
+.filterButton{
+    display: inline-block;
+    border:1px solid #0040bc;
+    font-size: 18px;
+    padding: 2px 5px 2px 2px;
+    margin:2px;
+    height:26px;
+    line-height: 26px;
+    border-radius: 3px;
+    background: #d3ebeb;
+    transition: 0.1s ease;
+}
+.filterButton.expanded{
+    background: #ffe7c8;
+    border: 1px solid #c4863b;
+}
+/**
+ * Do checker styling
+ */
+.filterButton.checker{
+    background: #fff0e6;
+    border: 1px solid #c44e27;
+}
+.filterButton.checker.expanded{
+    background: #f0ffe5;
+    border: 1px solid #0f510c;
+}
+.filterButton.checker .filterController{
+    background: #c44e27;
+}
+.filterButton.checker .filterController:hover{
+    background: #9f240c;
+}
+.filterButton.checker.expanded .filterController{
+    background: #0f510c;
+}
+.filterButton.checker.expanded .filterController:hover{
+    background: #0d460a;
+}
+
+.filterController{
+    border:none;
+    margin: -2px 2px -2px -2px;
+    border-radius: 2px 0 0 2px;
+    height: 30px;
+    width: 30px;
+    line-height: 26px;
+    vertical-align: top;
+    color: #ffe7c8;
+    font-size: 20px;
+    font-weight: 900;
+    background: #0040bc;
+    transition: 0.1s ease;
+}
+.filterController:hover{
+    background: #003789;
+}
+.filterButton.expanded .filterController{
+    background: #c4863b;
+}
+.filterButton.expanded .filterController:hover{
+    background: #91591d;
+}
+.filterButton input[type="time"]{
+    font-size: 18px;
+    font-family: "更纱黑体 SC", "Sarasa Gothic CL", Arial, 微软雅黑;
+    height:24px;
+    line-height: 26px;
+    border:1px solid #0040bc;
+    background: #d3e6ff33;
+    border-radius: 0 3px 3px 0;
+}
+.filterButton input[type="date"]{
+    width: 160px;
+    font-size: 18px;
+    font-family: "更纱黑体 SC", "Sarasa Gothic CL", Arial, 微软雅黑;
+    height:24px;
+    line-height: 26px;
+    border:1px solid #0040bc;
+    background: #d3e6ff33;
+    border-radius: 3px 0 0 3px;
+    margin-right: -1px;
+}
+.checkergreen{
+    color: #086418;
+    text-shadow: 0 0 2px #7ac97b;
+}
+
+/**
+ * Activity thingy
+ */
+.refresh{
+    border:none;
+    border-radius: 3px;
+    height: 32px;
+    width: 32px;
+    line-height: 26px;
+    font-size: 20px;
+    vertical-align: top;
+    background: #2a2d7b;
+    color: #ffe7c8;
+    margin:2px;
+    transition: 0.1s ease;
+}
+
+.refresh:hover{
+    background: #0f124d;
+}
+
+#ActivityList{height: 100%;font-size: 0;}
+
+#ActivityList .Activities{
+    max-width: 860px;
+    display: inline-block;
+}
+#ActivityList .Activities .activity.header{
+    font-weight: 900;
+    background: #ffe7c833;
+}
+#ActivityList .activity > span,#ActivityList .activity > input{
+    line-height: 30px;
+    font-size: 20px;
+    vertical-align: top;
+    height: 30px;
+    width: 200px;
+    display: inline-block;
+    line-break: strict;
+    overflow: hidden;
+    transition: 0.1s ease;
+    border:none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+#ActivityList .Activities .activity > *:hover{
+    background: #6e778b33;
+}
+#ActivityList .Activities .id{
+    width: 50px;
+    padding-left: 4px;
+    background: rgba(255, 238, 217, 0.2);
+}
+#ActivityList .Activities .name{
+    width: 200px;
+}
+#ActivityList .Activities .loca{
+    width: 150px;
+    background: rgba(255, 238, 217, 0.2);
+}
+#ActivityList .Activities .date{
+    width: 180px;
+}
+#ActivityList .Activities .start{
+    width: 120px;
+    background: rgba(255, 238, 217, 0.2);
+}
+#ActivityList .Activities .end{
+    width: 120px;
+}
+#ActivityList .activity:hover{
+    background: #6e778b33;
+}
+
+#ActivityList .Activities .activity button{
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 3px;
+    line-height: 26px;
+    vertical-align: baseline;
+    margin: 0;
+    margin-top:2px;
+    margin-right: 4px;
+    font-size: 15px;
+    transition: 0.1s ease;
+}
+#ActivityList .Activities .activity.selected{
+    background: #eeffd655;
+    box-shadow: -2px 0 2px #0f3169;
+}
+.ActivityDetail{
+    padding-left: 10px;
+    background: #eeffd655;
+    height: 100%;
+    box-shadow: 0px 0 2px #0f3169;
+    display: inline-block;
+    vertical-align: top;
+    overflow:hidden;
+    border-radius: 0 5px 5px 0;
+    width: 425px;
+}
+.ActivityDetail h1{
+    font-size: 30px;
+    line-break: loose;
+}
+.ActivityDetail h2{
+    font-size: 20px;
+}
+/**
+ * Activity detail
+ */
+.ActivityDetail .timeSlot{
+    padding: 2px;
+    margin-left: -10px;
+    vertical-align: top;
+    line-height: 20px;
+}
+.ActivityDetail .timeSlot input{
+    line-height: 30px;
+    font-size: 20px;
+    vertical-align: top;
+    height: 30px;
+    width: 200px;
+    display: inline-block;
+    line-break: strict;
+    overflow: hidden;
+    transition: 0.1s ease;
+    border:none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+.ActivityDetail .timeSlot input:hover,.ActivityDetail .timeSlot:hover{
+    background: #6e778b33;
+}
+.ActivityDetail .timeSlot:nth-child(odd){
+    background: rgba(217, 186, 139, 0.4);
+}
+.ActivityDetail .timeSlot:nth-child(odd):hover{
+    background: rgba(186, 154, 112, 0.4);
+}
+
+.ActivityDetail .timeSlot button{
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 3px;
+    line-height: 26px;
+    padding: 0px;
+    vertical-align: baseline;
+    margin-top:2px;
+    font-size: 15px;
+    transition: 0.1s ease;
+}
+
+.ActivityDetail .timeSlot.tempor{
+    background: #a1cece66;
+}
+
+.ActivityDetail .timeSlotEditor button{
+    padding: 8px;
+    border: none;
+    font-size: 20px;
+    border-radius: 5px;
+    line-height: 20px;
+    margin-top:4px;
+    transition: 0.1s ease;
+}
+.ActivityDetail .timeSlotEditor button.slotSort{
+    color: #ffffff;
+    margin-top: 6px;
+    font-weight: 900;
+}
+.slotSort{
+    background: #a9563b;
+}
+.slotSort:hover{
+    background: #b6613d;
+}
+.slotSort:active{
+    background: #a14a28;
+}
+.timeSlotEditor input,.ActivityDetail .slotSplit{
+    line-height: 20px;
+    font-size: 20px;
+    height: 40px;
+    margin-top: 4px;
+    vertical-align: top;
+    box-sizing: border-box;
+    border:none;
+}
+.ActivityDetail .timeSlotEditor input{
+    background: #ffe7c855;
+    border: 1px #0f3169 solid;
+    border-radius: 3px 0 0 3px;
+    width: 60px;
+}
+.ActivityDetail .timeSlotEditor input:focus{
+    background: #ffe7c877;
+    border: 1px #103376 solid;
+    outline: none;
+    box-shadow: 0 0 1px #a1cece44;
+}
+
+.ActivityDetail .timeSlotEditor button.slotSplit{
+    border-radius: 0 3px 3px 0;
+    color: #ffffff;
+    font-weight: 900;
+}
+
+.slotSplit{
+    background: #0f3169;
+}
+.slotSplit:hover{
+    background: #143a74;
+}
+.slotSplit:active{
+    background: #0d2241;
+}
+
+.actions button{
+    margin:4px;
+    font-size: 20px;
+    padding: 8px;
+    border-radius: 3px;
+    border:none;
+    transition: 0.1s ease;
+    font-weight: 900;
+    color: #ffffff;
+    box-shadow: inset 0 2px 4px -1px rgba(43, 43, 35, 0.47);
+}
+.timeSlot button{
+    transition: 0.1s ease;
+    box-shadow: inset 0 2px 4px -1px rgba(43, 43, 35, 0.47);
+}
+.actions{
+    margin-left: -4px;
+}
+.actions button:hover,.timeSlot button:hover{
+    box-shadow: inset 0 2px 4px -1px #f1f1ea77;
+}
+.actions button:active,.timeSlot button:active{
+    box-shadow: inset 0 -2px 4px -1px rgba(43, 43, 35, 0.7);
+}
+.slotSubmit{
+    background: #0d460a;
+}
+.QRCodeReq{
+    background: #391263;
 }
