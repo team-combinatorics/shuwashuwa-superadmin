@@ -3,61 +3,134 @@
 <head>
 	<meta charset="UTF-8">
 	<title>shuwashuwa superadmin interface</title>
+	<script src="date-fns.js"></script>
 	<script src="vue.js"></script>
 	<script src="dcp.js"></script>
 	<script src="req.js"></script>
 	<script src="app.js"></script>
+	<link rel="stylesheet" href="icons/css/all.min.css">
 	<link rel="stylesheet" href="page.css"/>
 </head>
 <body>
 <div id="LoginForm">
 	<h1>数蛙数蛙超管控制台</h1>
 	<div id="username_sub">
-		<input id="username" type="text" placeholder="用户名" value=""/>
+		<input id="username" type="text" placeholder="用户名" value="shuwashuwa"/>
 	</div>
 	<div id="password_sub">
-		<input id="password" type="password" placeholder="密码" value=""/>
+		<input id="password" type="password" placeholder="密码" value="Tsugudaisuki"/>
 	</div>
 	<button id="login_button">
 		登录
 	</button>
 </div>
+<script type="text/x-template" id="filter-template">
+	<div class="filterButton" :class="{expanded:cenabled}">
+		<button class="filterController fa" :class="{close:cenabled,open:!cenabled,'fa-times':cenabled,'fa-plus':!cenabled}" v-on:click="cenabled=!cenabled,$emit('change',cenabled)"></button>
+		<slot name="title"></slot>
+		<span :class="{invisible:!cenabled}"><slot name="content"></slot></span>
+	</div>
+</script>
 <div id="ManagementPage" class="invisible">
-	<div id="AdminList">
-		<div class="admin header">
-			<span class="id">ID</span>
-			<span class="name">名字</span>
-			<span class="phone">手机</span>
-			<span class="email">邮箱</span>
-			<span class="ident">身份</span>
-			<span class="depart">学院</span>
-			<span class="stuid">学生证号</span>
-			<button v-bind:class="showTempo?'show':'hide'" v-on:click="showTempo=!showTempo">{{showTempo?'-':'+'}}</button>
+	<div id="Tabs">
+		<div class="TabsList">
+			<button class="Tab" v-for="(val,key,ind) in tabs" :class="key==showTab?'selected':'unselected'" v-on:click="showTab=key">{{val}}</button>
 		</div>
-		<div class="admin" id="addAdminForm" v-bind:class="showTempo?'':'invisible'">
-			<input v-bind:type="key=='id'?'number':'text'" v-for="(val,key,ind) in ctfDict" v-bind:class="key" v-model="tempo[val]"/>
-			<button class="add" v-on:click="addAdmin(tempo)">+</button>
-		</div>
-		<div class="admin" v-for="admin in admins">
-			<input v-bind:type="key=='id'?'number':'text'" v-for="(val,key,ind) in ctfDict" v-bind:class="key" v-model="admin[val]" v-bind:readonly="key=='id'" v-on:change="updAdmin(admin)"/>
-			<button class="delete" v-on:click="deleteAdmin(admin)">-</button>
+		<div class="TabsPage">
+			<div id="AdminList" :class="showTab==0?'':'invisible'">
+				<div class="admin header">
+					<span class="id">ID</span>
+					<span class="name">名字</span>
+					<span class="phone">手机</span>
+					<span class="email">邮箱</span>
+					<span class="ident">身份</span>
+					<span class="depart">学院</span>
+					<span class="stuid">学生证号</span>
+					<button class="fa" :class="{show:showTempo,hide:!showTempo,'fa-angle-down':!showTempo,'fa-angle-up':showTempo}" v-on:click="showTempo=!showTempo"></button>
+				</div>
+				<div class="admin" id="addAdminForm" v-bind:class="showTempo?'':'invisible'">
+					<input v-bind:type="key=='id'?'number':'text'" v-for="(val,key,ind) in ctfDict" v-bind:class="key" v-model="tempo[val]"/>
+					<button class="add fa fa-plus" v-on:click="addAdmin(tempo)"></button>
+				</div>
+				<div class="admin" v-for="admin in admins">
+					<input v-bind:type="key=='id'?'number':'text'" v-for="(val,key,ind) in ctfDict" v-bind:class="key" v-model="admin[val]" v-bind:readonly="key=='id'" v-on:change="updAdmin(admin)"/>
+					<button class="delete fa fa-minus" v-on:click="deleteAdmin(admin)"></button>
+				</div>
+			</div>
+			<div id="ActivityList" :class="showTab==1?'':'invisible'">
+				<div class="Activities">
+					<div class="filter">
+						<button class="refresh fa fa-redo" v-on:click="refreshActivities"></button>
+						<cfilter v-model="startEnabled">
+							<template v-slot:title>起始日期和时间</template>
+							<template v-slot:content><input type="date" v-model="startingDate"/><input type="time" v-model="startingTime"></template>
+						</cfilter>
+						<cfilter v-model="startEnabled">
+							<template v-slot:title>终止日期和时间</template>
+							<template v-slot:content><input type="date" v-model="endingDate"/><input type="time" v-model="endingTime"></template>
+						</cfilter>
+						<cfilter v-model="onGoing" class="checker">
+							<template v-slot:title>进行中</template>
+							<template v-slot:content><span class="fa fa-check checkergreen"></span></template>
+						</cfilter>
+					</div>
+					<div class="activity header">
+						<span v-for="(val,key,ind) in ctfHeaderDict2" :class="key">{{val}}</span>
+						<button class="fa" :class="{show:showTempo2,hide:!showTempo2,'fa-angle-down':!showTempo2,'fa-angle-up':showTempo2}" v-on:click="showTempo2=!showTempo2"></button>
+					</div>
+					<div class="activity body" id="" :class="{invisible:!showTempo2, selected: selectedAct==-2}">
+						<input :type="typeDict2[key]" v-for="(val,key,ind) in ctfDict2" v-bind:class="key" v-model="tempoAct[val]"/>
+						<button class="add fa fa-plus" v-on:click="selAct(-2)"></button>
+					</div>
+					<div class="activity body" v-for="act in acts" :class="{selected:selectedAct==act.id}">
+						<input :type="typeDict2[key]" v-for="(val,key,ind) in ctfDict2" :class="key" v-model="act[val]" :readonly="key=='id'"/>
+						<button class="select fa fa-angle-right" v-on:click="selAct(act.id)"></button>
+					</div>
+				</div>
+				<div class="ActivityDetail" :class="{invisible:selectedAct==-1}">
+					<h1>活动名：{{actSel.activityName}}</h1>
+					<h2>时间段列表</h2>
+					<div class="timeSlotList">
+						<div class="timeSlot" v-for="(slot,ind) in actSel.timeSlots">
+							<input type="time" v-model="slot.startTime"/>
+							<input type="time" v-model="slot.endTime"/>
+							<button class="fa fa-times delete" v-on:click="slotDel(ind)"></button>
+						</div>
+						<div class="timeSlot tempor">
+							<input type="time" v-model="tempoSlot.startTime"/>
+							<input type="time" v-model="tempoSlot.endTime"/>
+							<button class="fa fa-plus add" v-on:click="slotAdd(tempoSlot)"></button>
+						</div>
+					</div>
+					<div class="timeSlotEditor">
+						<button class="slotSort" v-on:click="slotSort">时间段排序</button><br/>
+						<input type="number" min="1" step="1" v-model="splitRegion"/>
+						<button class="slotSplit" v-on:click="slotSplit">以 {{splitRegion}} 分钟为步长分割时间段</button>
+					</div>
+					<div class="actions">
+						<button class="slotSubmit" v-on:click="submitAct">提交</button>
+						<button class="delete" :class="{invisible:selectedAct==-2}" v-on:click="deleteAct">删除</button>
+						<button class="QRCodeReq" :class="{invisible:selectedAct==-2}" v-on:click="reqQR(selectedAct)">显示QRCode</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="StatusWindow" v-bind:class="pop?'':'winHide'">
-		<button class="toggleButton" v-on:click="pop=!pop">{{pop?'>':'<'}}</button>
+		<button class="toggleButton fas" v-on:click="pop=!pop" :class="{'fa-angle-right':pop,'fa-angle-left':!pop}"></button>
 		<span class="windowContent">
 			<div class="ImageCount">
 				<div class="ImageCounter" v-bind:class="delOn||hovered?'transparent':''">缓存图片数量：<span class="cc">{{count}}</span></div>
 				<div class="ImageClearer" v-bind:class="delOn?'opaque':''">
 					<div class="PasswordChange" v-on:mouseenter="hovered=true" v-on:mouseleave="hovered=false">
 						<input type="number" v-model="clearDays" placeholder="clear days" class="clear" v-on:focus="delOn=true" v-on:focusout="delOn=false"/>
-						<button v-on:click="clear(clearDays)" class="clear">⚙</button>
+						<button v-on:click="clear(clearDays)" class="fa fa-trash clear"></button>
 					</div>
 				</div>
 			</div>
 			<div class="PasswordChange">
 				<input type="password" v-model="changedPasswd" placeholder="换密码"/>
-				<button v-on:click="change(changedPasswd)">⚙</button>
+				<button v-on:click="change(changedPasswd)" class="fa fa-cog"></button>
 			</div>
 		</span>
 	</div>
